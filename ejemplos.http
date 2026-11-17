@@ -1,0 +1,43 @@
+@baseUrl = http://localhost:8080/fhir
+
+### Measure: ejecutar despues de scripts/cargar-measure.ps1 y de cargar los pacientes
+### reportType=population produce MeasureReport.type=summary en FHIR R4
+GET {{baseUrl}}/Measure/cobertura-peso-adultos/$evaluate-measure?periodStart=2025-01-01&periodEnd=2025-12-31&reportType=population
+Accept: application/fhir+json
+
+### Measure individual para Ana (esperado: denominador 1, numerador 1)
+GET {{baseUrl}}/Measure/cobertura-peso-adultos/$evaluate-measure?periodStart=2025-01-01&periodEnd=2025-12-31&reportType=subject&subject=Patient/ana
+Accept: application/fhir+json
+
+### Capacidades del servidor
+GET {{baseUrl}}/metadata
+Accept: application/fhir+json
+
+### Datos que consulta el motor para Ana
+GET {{baseUrl}}/Observation?subject=Patient/ana
+Accept: application/fhir+json
+
+### CQL almacenado (content.data contiene el texto en Base64)
+GET {{baseUrl}}/Library/reglas-basicas
+Accept: application/fhir+json
+
+### Evaluar todas las expresiones para Ana
+POST {{baseUrl}}/Library/reglas-basicas/$evaluate
+Content-Type: application/fhir+json
+Accept: application/fhir+json
+
+{"resourceType":"Parameters","parameter":[{"name":"subject","valueString":"Patient/ana"}]}
+
+### Bruno es menor aunque tiene una observacion final
+POST {{baseUrl}}/Library/reglas-basicas/$evaluate
+Content-Type: application/fhir+json
+Accept: application/fhir+json
+
+{"resourceType":"Parameters","parameter":[{"name":"subject","valueString":"Patient/bruno"}]}
+
+### Carla es adulta pero su observacion es preliminar
+POST {{baseUrl}}/Library/reglas-basicas/$evaluate
+Content-Type: application/fhir+json
+Accept: application/fhir+json
+
+{"resourceType":"Parameters","parameter":[{"name":"subject","valueString":"Patient/carla"}]}

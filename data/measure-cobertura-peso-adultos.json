@@ -1,0 +1,38 @@
+{
+  "resourceType": "Measure",
+  "id": "cobertura-peso-adultos",
+  "url": "http://example.org/fhir/Measure/CoberturaPesoAdultos",
+  "version": "1.0.0",
+  "name": "CoberturaPesoAdultos",
+  "title": "Cobertura de registro de peso en adultos",
+  "status": "draft",
+  "experimental": true,
+  "description": "Indicador didactico con pacientes ficticios: proporcion de adultos al inicio del periodo con al menos un registro de peso final durante el periodo. No es una recomendacion clinica.",
+  "library": ["http://example.org/fhir/Library/CoberturaPesoAdultos|1.0.0"],
+  "scoring": {
+    "coding": [{"system": "http://terminology.hl7.org/CodeSystem/measure-scoring", "code": "proportion"}]
+  },
+  "type": [{
+    "coding": [{"system": "http://terminology.hl7.org/CodeSystem/measure-type", "code": "process"}]
+  }],
+  "rationale": "Ejercitar medicion poblacional con CQL, terminologia y un periodo parametrizable.",
+  "clinicalRecommendationStatement": "Ejemplo de laboratorio; no establece frecuencia recomendada de medicion de peso.",
+  "guidance": "Cuenta pacientes una sola vez. Edad al inicio del periodo. Sin birthDate no se confirma elegibilidad. Solo admite Observation.effectiveDateTime y estado final; no incluye corrected, amended ni effectivePeriod. No comprueba valueQuantity: mide presencia del registro, no validez del valor. Sin exclusiones ni excepciones. Un denominador cero no representa cobertura cero: la proporcion no es calculable.",
+  "group": [{
+    "id": "cobertura",
+    "population": [
+      {
+        "code": {"coding": [{"system": "http://terminology.hl7.org/CodeSystem/measure-population", "code": "initial-population"}]},
+        "criteria": {"language": "text/cql-identifier", "expression": "PoblacionInicial"}
+      },
+      {
+        "code": {"coding": [{"system": "http://terminology.hl7.org/CodeSystem/measure-population", "code": "denominator"}]},
+        "criteria": {"language": "text/cql-identifier", "expression": "Denominador"}
+      },
+      {
+        "code": {"coding": [{"system": "http://terminology.hl7.org/CodeSystem/measure-population", "code": "numerator"}]},
+        "criteria": {"language": "text/cql-identifier", "expression": "Numerador"}
+      }
+    ]
+  }]
+}
