@@ -29,9 +29,17 @@ poblacion inicial 2, denominador 2, numerador 1 y measureScore.value 0.5 (50 %).
 Ana cumple; Bruno es menor; Carla solo tiene un registro preliminar.
 Sin sujetos elegibles la proporcion no es calculable.
 
-El MeasureReport lo produce `$evaluate-measure`; no se incluye un resultado
-prefabricado. Su persistencia depende del servidor. La traduccion y ejecucion de
-este indicador deben verificarse contra HAPI al realizar la evaluacion.
+El MeasureReport lo produce `$evaluate-measure`. Su persistencia depende del servidor.
+La version 1.0.2 fue traducida y evaluada en HAPI: resultado completo, poblacion
+inicial 2, denominador 2, numerador 1 y puntuacion 0.5. La respuesta se guarda en
+`output/measure-peso-2025.json`; hay tambien reportes individuales en
+`output/*-measure-peso-2025.json`.
+
+Si aparece `resolved search parameter definition is null`, el motor puede estar
+intentando convertir el filtro temporal en una busqueda FHIR. Esta version filtra
+codigo y fecha dentro de CQL; la funcion `EnPeriodo` evita la optimizacion temporal.
+Tras modificar una biblioteca, si persiste el error anterior, reinicia HAPI para
+descartar la cache y vuelve a cargar pacientes y recursos con los dos scripts.
 
 Referencia: [Measure/$evaluate-measure en FHIR R4](https://hl7.org/fhir/R4/measure-operation-evaluate-measure.html).
 

@@ -1,4 +1,4 @@
-library CoberturaPesoAdultos version '1.0.0'
+library CoberturaPesoAdultos version '1.0.2'
 
 using FHIR version '4.0.1'
 
@@ -21,12 +21,20 @@ define "PoblacionInicial":
 define "Denominador":
   "PoblacionInicial"
 
+// Evaluar la fecha en CQL evita que el optimizador la convierta en una
+// busqueda por effective (sin SearchParameter resoluble en este motor).
+define function "EnPeriodo"(fecha FHIR.dateTime):
+  fecha.value during "Measurement Period"
+
 // Esta primera version admite effectiveDateTime, no effectivePeriod.
 // Una fecha ausente o fuera del periodo no cumple el criterio.
 define "PesosFinalesEnPeriodo":
-  [Observation: "Peso corporal"] O
+  [Observation] O
     where O.status.value = 'final'
-      and (O.effective as FHIR.dateTime).value during "Measurement Period"
+      and exists(O.code.coding C
+        where C.system.value = 'http://loinc.org'
+          and C.code.value = '29463-7')
+      and "EnPeriodo"(O.effective as FHIR.dateTime)
 
 define "Numerador":
   "Denominador" and exists("PesosFinalesEnPeriodo")
